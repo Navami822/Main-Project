@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { FaHome, FaQuestionCircle, FaReply } from 'react-icons/fa';
+import { FaHome, FaQuestionCircle, FaReply, FaChartBar } from 'react-icons/fa';
 
 const StudentDashboard = () => {
   const [student, setStudent] = useState(null);
   const [error, setError] = useState(null);
 
-  // Styles
+  // Styles for white background and transparent black navbar with enhanced profile box lighting effect
   const styles = {
     body: {
       display: 'flex',
@@ -16,9 +16,9 @@ const StudentDashboard = () => {
       flexDirection: 'column',
       height: '100vh',
       margin: 0,
-      backgroundColor: '#121212',
+      backgroundColor: '#fff',  // White background
       fontFamily: "'Roboto', sans-serif",
-      color: '#fff',
+      color: '#333', // Dark text for readability
     },
     navbar: {
       display: 'flex',
@@ -26,9 +26,9 @@ const StudentDashboard = () => {
       alignItems: 'center',
       padding: '10px 30px',
       width: '100%',
-      backgroundColor: '#1a1a2e',
-      color: '#fff',
-      boxShadow: '0px 4px 10px rgba(255, 255, 255, 0.1)',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',  // Transparent black background for navbar
+      color: '#fff', // White text in navbar
+      boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.3)', // Subtle shadow
       position: 'fixed',
       top: 0,
       left: 0,
@@ -44,13 +44,13 @@ const StudentDashboard = () => {
       width: '50px',
       height: '50px',
       borderRadius: '50%',
-      backgroundColor: '#fff',
+      backgroundColor: '#007bff',  // Blue background for logo
     },
     logoText: {
       fontSize: '28px',
       fontWeight: 'bold',
       color: '#fff',
-      background: 'linear-gradient(90deg, #ff6b6b, #feca57, #1dd1a1, #54a0ff, #5f27cd)',
+      background: 'linear-gradient(90deg, #ff6b6b, #feca57, #1dd1a1, #54a0ff, #5f27cd)', // Gradient color for title
       WebkitBackgroundClip: 'text',
       WebkitTextFillColor: 'transparent',
     },
@@ -65,65 +65,78 @@ const StudentDashboard = () => {
       padding: '10px 20px',
       fontSize: '16px',
       fontWeight: 'bold',
-      color: '#fff',
-      backgroundColor: '#007bff',
+      color: '#fff',  // White color for links
+      backgroundColor: '#007bff',  // Blue background for links
       borderRadius: '5px',
       textDecoration: 'none',
     },
     profileCard: {
-      background: 'linear-gradient(135deg, #a18cd1, #fbc2eb, #f6d365, #ffb997)',
+      background: 'linear-gradient(145deg, #ffecd2, #fcb69f)', // Soft gradient background for profile card
       borderRadius: '20px',
-      boxShadow: '0px 15px 30px rgba(0, 0, 0, 0.4)',
+      boxShadow: '0px 15px 30px rgba(0, 0, 0, 0.2)',  // Soft shadow for profile card
       width: '90%',
       maxWidth: '450px',
       padding: '25px',
       textAlign: 'center',
-      color: '#333',
+      color: '#333',  // Dark text in the card
       marginTop: '100px',
+      position: 'relative', // Needed for glow effect
+      overflow: 'hidden', // Ensures the glow doesn't overflow the border radius
     },
     profileImage: {
       width: '100px',
       height: '100px',
       borderRadius: '50%',
-      backgroundColor: '#fff',
+      backgroundColor: '#007bff',  // Blue background for profile image
       margin: '0 auto 15px',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
       fontSize: '28px',
       fontWeight: 'bold',
-      color: '#333',
+      color: '#fff',  // White text in profile image
     },
     name: {
       fontSize: '28px',
       fontWeight: '700',
       margin: '15px 0',
-      color: '#222',
+      color: '#222',  // Dark color for name
     },
     headline: {
       fontSize: '18px',
-      color: '#444',
+      color: '#555',  // Lighter text color for headline
       marginBottom: '20px',
     },
     detailsSection: {
       textAlign: 'left',
       marginTop: '20px',
     },
+
+    footer: {
+      marginTop: '50px',
+      padding: '15px',
+      backgroundColor: '#333',
+      color: '#fff',
+      textAlign: 'center',
+      width: '100%',
+      position: 'fixed',
+      bottom: 0,
+    },
     detailRow: {
       display: 'flex',
       justifyContent: 'space-between',
-      background: 'rgba(255, 255, 255, 0.7)',
+      background: '#f1f1f1', // Light gray background for each detail row
       padding: '10px 15px',
       borderRadius: '8px',
       marginBottom: '10px',
-      boxShadow: '0px 3px 8px rgba(0, 0, 0, 0.2)',
+      boxShadow: '0px 3px 8px rgba(0, 0, 0, 0.05)', // Subtle shadow for each row
     },
     keyLabel: {
       fontWeight: 'bold',
-      color: '#222',
+      color: '#333', // Dark color for key labels
     },
     value: {
-      color: '#444',
+      color: '#555',  // Lighter color for value text
     },
     error: {
       color: '#e63946',
@@ -134,12 +147,25 @@ const StudentDashboard = () => {
       borderRadius: '8px',
       maxWidth: '400px',
       margin: '20px auto',
-      boxShadow: '0px 5px 15px rgba(0, 0, 0, 0.2)',
+      boxShadow: '0px 5px 15px rgba(0, 0, 0, 0.1)',
     },
     loading: {
       fontSize: '20px',
-      color: '#007bff',
+      color: '#007bff', // Blue color for loading
       textAlign: 'center',
+    },
+    // Glowing effect for the profile card with stronger lighting
+    glowEffect: {
+      position: 'absolute',
+      top: '5px',
+      left: '5px',
+      right: '5px',
+      bottom: '5px',
+      background: 'rgba(255, 255, 255, 0.2)',
+      filter: 'blur(12px)', // Stronger blur for a more prominent glow
+      borderRadius: '20px',
+      boxShadow: '0px 0px 15px rgba(255, 255, 255, 0.6)', // Stronger shadow for lighting
+      animation: 'glow 1.5s infinite alternate',
     },
   };
 
@@ -180,11 +206,13 @@ const StudentDashboard = () => {
           <Link to="/students" style={styles.navLink}><FaHome /> Home</Link>
           <Link to="/doubtlist" style={styles.navLink}><FaQuestionCircle /> Doubts</Link>
           <Link to="/replies" style={styles.navLink}><FaReply /> Replies</Link>
+          <Link to="/chart" style={styles.navLink}><FaChartBar /> Chart</Link>
         </div>
       </header>
 
       {/* Profile Card */}
       <div style={styles.profileCard}>
+        <div style={styles.glowEffect}></div> {/* Glowing Effect */}
         <div style={styles.profileImage}>
           {student.name.charAt(0)}
         </div>
@@ -213,6 +241,9 @@ const StudentDashboard = () => {
           </div>
         </div>
       </div>
+      <footer style={styles.footer}>
+        © {new Date().getFullYear()} BMI Tracker | Stay Fit, Stay Healthy
+      </footer>
     </div>
   );
 };

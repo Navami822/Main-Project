@@ -72,7 +72,7 @@ function Final() {
           <a href="/teachers" style={styles.navLink}>
             <FaHome style={styles.icon} /> Home
           </a>
-          <a href="//bmicalculation" style={styles.navLink}>
+          <a href="/bmicalculation" style={styles.navLink}>
             <FaCalculator style={styles.icon} /> BMI Calculation
           </a>
           <a href="/trdoubtlist" style={styles.navLink}>
@@ -135,9 +135,9 @@ function Final() {
 const styles = {
   pageContainer: {
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-    background: '#f4f6f9',
+    background: '#f9fcff',
     color: '#333',
-    minHeight: '200vh',
+    minHeight: '100vh',
     display: 'flex',
     flexDirection: 'column',
   },
@@ -145,33 +145,36 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
     padding: '20px',
-    backgroundColor: '#333',
-    color: '#fff',
+    backgroundColor: '#f0f8ff',
+    color: '#444',
     position: 'fixed',
     top: '0',
     width: '100%',
     zIndex: '1000',
-    borderBottom: '2px solid #f39c12',
+    borderBottom: '2px solid #a8dadc',
   },
   titleContainer: {
     display: 'flex',
     alignItems: 'center',
   },
   logo: {
-    width: '40px',
-    height: '40px',
+    width: '80px',
+    height: '50px',
     marginRight: '10px',
   },
   title: {
     fontSize: '26px',
     fontWeight: 'bold',
+    background: "linear-gradient(to right, red, orange, yellow, green, violet)",
+    WebkitBackgroundClip: "text", // Clip the gradient to text
+  WebkitTextFillColor: "transparent",
   },
   buttonContainer: {
     display: 'flex',
     alignItems: 'center',
   },
   navLink: {
-    color: '#fff',
+    color: '#005f73',
     marginLeft: '20px',
     textDecoration: 'none',
     fontSize: '1.2rem',
@@ -185,18 +188,18 @@ const styles = {
   },
   container: {
     padding: '20px',
-    backgroundColor: '#fff',
+    backgroundColor: '#f0fdfd',
     borderRadius: '15px',
     width: '1000px',
     margin: '120px auto 30px',
-    boxShadow: '0 6px 12px rgba(0, 0, 0, 0.1)',
-    background: 'linear-gradient(45deg, #ff6ec7, #3e8e41)',
+    boxShadow: '0 4px 8px rgba(173, 216, 230, 0.5)',
+    background: 'linear-gradient(45deg, #caf0f8, #ade8f4)',
     position: 'relative',
     animation: 'glow 1.5s infinite alternate',
   },
   header: {
     textAlign: 'center',
-    color: '#fff',
+    color: '#0077b6',
     marginBottom: '20px',
     fontSize: '2rem',
     fontWeight: 'bold',
@@ -210,13 +213,13 @@ const styles = {
     fontSize: '16px',
     transition: '0.3s ease-in-out',
     outline: 'none',
-    backgroundColor: '#f4f4f4',
-    color: '#333',
-    boxShadow: '0 0 10px rgba(255, 0, 255, 0.3)',
+    backgroundColor: '#eef6f7',
+    color: '#005f73',
+    boxShadow: '0 0 5px rgba(173, 216, 230, 0.4)',
   },
   button: {
-    backgroundColor: '#007BFF',
-    color: '#fff',
+    backgroundColor: '#90e0ef',
+    color: '#023e8a',
     border: 'none',
     padding: '12px 20px',
     cursor: 'pointer',
@@ -224,42 +227,45 @@ const styles = {
     borderRadius: '8px',
     fontSize: '16px',
     transition: '0.3s ease-in-out',
-    boxShadow: '0 0 10px rgba(0, 123, 255, 0.6)',
+    boxShadow: '0 0 10px rgba(173, 216, 230, 0.7)',
   },
   error: {
-    color: '#ff4d4d',
+    color: '#ef476f',
     fontSize: '18px',
     marginTop: '10px',
   },
   result: {
     marginTop: '20px',
     fontSize: '20px',
-    color: '#4CAF50',
+    color: '#06d6a0',
     fontWeight: 'bold',
   },
   footer: {
     marginTop: 'auto',
-    padding: '10px 0',
+    padding: '15px 0',
     textAlign: 'center',
-    backgroundColor: '#333',
-    color: '#fff',
-    fontSize: '0.8rem',
+    backgroundColor: '#005f73',
+    color: '#ffffff',
+    fontSize: '1rem',
+    fontWeight: 'bold',
+    boxShadow: '0 -2px 10px rgba(0, 95, 115, 0.3)',
   },
+
 };
 
-// Add keyframes for glowing effect
+// Adjusted animation
 const keyframes = `
   @keyframes glow {
     0% {
-      box-shadow: 0 0 15px rgba(255, 0, 255, 0.4), 0 0 30px rgba(255, 0, 255, 0.2);
+      box-shadow: 0 0 10px rgba(173, 216, 230, 0.3), 0 0 20px rgba(173, 216, 230, 0.2);
     }
     100% {
-      box-shadow: 0 0 25px rgba(255, 0, 255, 0.6), 0 0 50px rgba(255, 0, 255, 0.4);
+      box-shadow: 0 0 15px rgba(173, 216, 230, 0.5), 0 0 30px rgba(173, 216, 230, 0.4);
     }
   }
 `;
 
-// Add this keyframes in your HTML head or inject via JavaScript
 document.head.insertAdjacentHTML('beforeend', `<style>${keyframes}</style>`);
+
 
 export default Final;

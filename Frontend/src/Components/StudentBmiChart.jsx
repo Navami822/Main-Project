@@ -135,7 +135,7 @@ const styles = {
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
     background: '#f4f6f9',
     color: '#333',
-    minHeight: '200vh',
+    minHeight: '100vh',
     display: 'flex',
     flexDirection: 'column',
   },
@@ -163,6 +163,9 @@ const styles = {
   title: {
     fontSize: '26px',
     fontWeight: 'bold',
+    background: 'linear-gradient(90deg, #ff6b6b, #feca57, #1dd1a1, #54a0ff, #5f27cd)', // Rainbow gradient
+    WebkitBackgroundClip: 'text', // Clip the background to the text
+    WebkitTextFillColor: 'transparent', // Make the text color transparent to show gradient
   },
   buttonContainer: {
     display: 'flex',

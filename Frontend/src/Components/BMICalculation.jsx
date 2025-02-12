@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { FaHome, FaQuestionCircle, FaTable, FaCalculator,FaFileAlt  } from 'react-icons/fa';
+
 
 // Function to calculate BMI
 const calculateBMI = (height, weight) => {
   const bmi = weight / (height * height);
   return bmi.toFixed(2);
 };
-
 const BMICalculation = () => {
   const [students, setStudents] = useState([]);
   const [newStudent, setNewStudent] = useState({
@@ -116,14 +117,36 @@ const BMICalculation = () => {
     <div className="container">
       {/* Navigation Bar */}
       <nav className="navbar">
-        <img src="/images/logo.jpg" alt="Logo" className="logo" />
-        <ul className="nav-links">
-          <li><a href="/teachers">Home</a></li>
-          <li><a href="/trdoubtlist">Doubts</a></li>
-          <li><a href="/finalbmi">Final BMI</a></li>
-          <li><a href="/bmitable">BMI Overview</a></li>
-        </ul>
-      </nav>
+  <img src="/images/logo.jpg" alt="Logo" className="logo" />
+  <h1 className="nav-title">BMI Tracker</h1>
+  <ul className="nav-links">
+    <li>
+      <a href="/teachers">
+        <FaHome className="nav-icon" /> Home
+      </a>
+    </li>
+    <li>
+      <a href="/trdoubtlist">
+        <FaQuestionCircle className="nav-icon" /> Doubts
+      </a>
+    </li>
+    <li>
+      <a href="/finalbmi">
+        <FaCalculator className="nav-icon" /> Final BMI
+      </a>
+    </li>
+    <li>
+      <a href="/bmitable">
+        <FaTable className="nav-icon" /> BMI Overview
+      </a>
+    </li>
+    <li>
+      <a href="/report">
+        < FaFileAlt className="nav-icon" /> Report
+      </a>
+    </li>
+  </ul>
+</nav>
 
       <h1 className="title">BMI Calculation for Students</h1>
 
@@ -167,7 +190,19 @@ const BMICalculation = () => {
         <input className="input-field" type="email" placeholder="Email" value={newStudent.email} onChange={(e) => setNewStudent({ ...newStudent, email: e.target.value })} />
         <input className="input-field" type="text" placeholder="Name" value={newStudent.name} onChange={(e) => setNewStudent({ ...newStudent, name: e.target.value })} />
         <input className="input-field" type="number" placeholder="Age" value={newStudent.age} onChange={(e) => setNewStudent({ ...newStudent, age: e.target.value })} />
-        <input className="input-field" type="text" placeholder="Gender" value={newStudent.gender} onChange={(e) => setNewStudent({ ...newStudent, gender: e.target.value })} />
+        <select
+  className="input-field"
+  value={newStudent.gender}
+  onChange={(e) => setNewStudent({ ...newStudent, gender: e.target.value })}
+>
+  <option value="" disabled>
+    Select Gender
+  </option>
+  <option value="Male">Male</option>
+  <option value="Female">Female</option>
+  <option value="Other">Other</option>
+</select>
+
         <input className="input-field" type="number" placeholder="Height (m)" value={newStudent.height} onChange={(e) => setNewStudent({ ...newStudent, height: e.target.value })} />
         <input className="input-field" type="number" placeholder="Weight (kg)" value={newStudent.weight} onChange={(e) => setNewStudent({ ...newStudent, weight: e.target.value })} />
 
@@ -244,6 +279,9 @@ const BMICalculation = () => {
           <p>{message}</p>
         </div>
       )}
+       <footer className="footer">
+        &copy; {new Date().getFullYear()} BMI Tracker. All rights reserved.
+      </footer>
     </div>
   );
 };
@@ -294,7 +332,7 @@ body {
 
 .logo {
   width: 90px;
-  height: 80px;
+  height: 70px;
 }
 
 .nav-links {
@@ -303,7 +341,13 @@ body {
   padding: 0;
   display: flex;
 }
-
+.nav-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 .nav-links li {
   margin-left: 20px;
 }
@@ -417,6 +461,15 @@ body {
 .cancel:hover {
   background-color: #999;
 }
+  .footer {
+            text-align: center;
+            padding: 10px;
+            background:rgb(12, 13, 14);
+             border-top: 2px solidrgb(39, 38, 38);
+            font-size: 14px;
+            color: #ffffff;
+            margin-top: auto;
+          }
 `;
 
 export const style = document.createElement("style");

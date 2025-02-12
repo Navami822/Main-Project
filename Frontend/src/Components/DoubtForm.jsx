@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { FaHome, FaUser, FaEnvelope, FaChartLine } from "react-icons/fa";  // Importing icons from react-icons
 
 const DoubtForm = () => {
   const [studentEmail, setStudentEmail] = useState("");
@@ -39,9 +40,18 @@ const DoubtForm = () => {
           <div style={styles.logoText}>Student Dashboard</div>
         </div>
         <div style={styles.navLinks}>
-          <Link to="/students" style={styles.navLink}>Home</Link>
-          <Link to="/student-details" style={styles.navLink}>Profile</Link>
-          <Link to="/replies" style={styles.navLink}>Replies</Link>
+          <Link to="/students" style={styles.navLink}>
+            <FaHome style={styles.icon} /> Home
+          </Link>
+          <Link to="/student-details" style={styles.navLink}>
+            <FaUser style={styles.icon} /> Profile
+          </Link>
+          <Link to="/replies" style={styles.navLink}>
+            <FaEnvelope style={styles.icon} /> Replies
+          </Link>
+          <Link to="/chart" style={styles.navLink}>
+            <FaChartLine style={styles.icon} /> Chart
+          </Link>
         </div>
       </header>
 
@@ -76,55 +86,80 @@ const DoubtForm = () => {
           Submit
         </button>
       </form>
+      <footer style={styles.footer}>
+        © {new Date().getFullYear()} BMI Tracker | Stay Fit, Stay Healthy
+      </footer>
     </div>
   );
 };
 
 const styles = {
   container: {
-    maxWidth: "400px",
-    margin: "120px auto 50px auto", // Added top margin to avoid overlap with the navbar
-    padding: "20px",
-    backgroundColor: "#222",
-    color: "#fff",
+    maxWidth: "600px",
+    margin: "120px auto 50px auto",
+    padding: "30px",
+    backgroundColor: "#fff",
+    color: "#333",
     borderRadius: "10px",
-    boxShadow: "0px 0px 10px rgba(255,255,255,0.2)",
+    boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
     textAlign: "center",
   },
+  footer: {
+    position: "fixed", // Keeps the footer at the bottom
+    bottom: 0,
+    left: 0,
+    width: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.8)", // Transparent black background
+    color: "white",
+    textAlign: "center",
+    padding: "10px 0",
+    fontSize: "14px",
+    fontWeight: "bold",
+    boxShadow: "0px -2px 10px rgba(0,0,0,0.1)",
+  },
+
+  
   title: {
-    marginBottom: "10px",
+    marginBottom: "20px",
+    background: "linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet)",
+    WebkitBackgroundClip: "text",
+    color: "transparent",
+    fontSize: "24px",
+    fontWeight: "bold",
   },
   form: {
     display: "flex",
     flexDirection: "column",
   },
   input: {
-    padding: "10px",
-    marginBottom: "10px",
-    borderRadius: "5px",
-    border: "none",
-    fontSize: "16px",
+    padding: "15px",
+    marginBottom: "15px",
+    borderRadius: "8px",
+    border: "1px solid #ccc",
+    fontSize: "18px",
+    width: "100%",
   },
   textarea: {
-    padding: "10px",
-    minHeight: "100px",
-    borderRadius: "5px",
-    border: "none",
-    fontSize: "16px",
-    marginBottom: "10px",
+    padding: "15px",
+    minHeight: "120px",
+    borderRadius: "8px",
+    border: "1px solid #ccc",
+    fontSize: "18px",
+    marginBottom: "15px",
+    width: "100%",
   },
   button: {
-    padding: "10px",
+    padding: "15px",
     backgroundColor: "#007BFF",
     color: "white",
     border: "none",
-    borderRadius: "5px",
+    borderRadius: "8px",
     cursor: "pointer",
-    fontSize: "16px",
+    fontSize: "18px",
   },
   message: {
-    marginBottom: "10px",
-    color: "#0f0",
+    marginBottom: "15px",
+    color: "#28a745",
   },
 
   // Navbar Styles
@@ -134,9 +169,9 @@ const styles = {
     alignItems: "center",
     padding: "10px 30px",
     width: "100%",
-    backgroundColor: "#1a1a2e",
+    backgroundColor: "rgba(0, 0, 0, 0.7)", // Transparent black background
     color: "#fff",
-    boxShadow: "0px 4px 10px rgba(255, 255, 255, 0.1)",
+    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
     position: "fixed",
     top: 0,
     left: 0,
@@ -149,18 +184,17 @@ const styles = {
     gap: "15px",
   },
   logo: {
-    width: "50px",
-    height: "50px",
-    borderRadius: "50%",
-    backgroundColor: "#fff",
+    width: "80px",
+    height: "60px",
+    borderRadius: "0",
+    backgroundColor: "#007BFF",
   },
   logoText: {
-    fontSize: "28px",
+    fontSize: "24px",
     fontWeight: "bold",
-    color: "#fff",
     background: "linear-gradient(90deg, #ff6b6b, #feca57, #1dd1a1, #54a0ff, #5f27cd)",
     WebkitBackgroundClip: "text",
-    WebkitTextFillColor: "transparent",
+    color: "transparent",
   },
   navLinks: {
     display: "flex",
@@ -171,9 +205,14 @@ const styles = {
     fontSize: "16px",
     fontWeight: "bold",
     color: "#fff",
-    backgroundColor: "#007bff",
     borderRadius: "5px",
     textDecoration: "none",
+    backgroundColor: "transparent",
+    display: "flex",
+    alignItems: "center",
+  },
+  icon: {
+    marginRight: "8px", // Spacing between icon and text
   },
 };
 

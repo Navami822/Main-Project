@@ -1,9 +1,111 @@
 import React, { useEffect, useState } from "react";
+import { FaHome, FaCalculator, FaChartLine, FaTable } from "react-icons/fa";
+
+const styles = {
+  navbar: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#333",
+    padding: "10px",
+    color: "#fff",
+  },
+  logo: {
+    width: "50px",
+    height: "50px",
+  },
+  navTitle: {
+    fontSize: "24px",
+  },
+  navLinks: {
+    display: "flex",
+    gap: "15px",
+  },
+  navLink: {
+    color: "#fff",
+    textDecoration: "none",
+    fontSize: "18px",
+  },
+  icon: {
+    marginRight: "5px",
+  },
+  container: {
+    width: "500px", // Adjust as needed
+    height: "300px", // Make it square
+    margin: "50px auto", // Center it
+    padding: "20px",
+    border: "1px solid #ddd",
+    borderRadius: "10px",
+    backgroundColor: "rgba(235, 241, 241, 0.85)",
+    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.2)",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center", // Center content vertically
+  },
+
+  title: {
+    fontSize: "38px",
+    marginBottom: "10px",
+    textAlign: "center",
+  },
+  noDoubts: {
+    color: "#777",
+  },
+  list: {
+    listStyle: "none",
+    padding: 0,
+  },
+  doubtItem: {
+    border: "1px solid #ddd",
+    padding: "10px",
+    marginBottom: "10px",
+    borderRadius: "5px",
+    backgroundColor: "rgba(255, 255, 255, 0.85)",
+    boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+  },
+  doubtText: {
+    fontSize: "16px",
+  },
+  replyButton: {
+    padding: "5px 10px",
+    backgroundColor: "#007bff",
+    color: "#fff",
+    border: "none",
+    borderRadius: "3px",
+    cursor: "pointer",
+    marginTop: "5px",
+  },
+  textarea: {
+    width: "100%",
+    height: "60px",
+    marginTop: "10px",
+    padding: "5px",
+  },
+  submitButton: {
+    padding: "5px 10px",
+    backgroundColor: "#28a745",
+    color: "#fff",
+    border: "none",
+    borderRadius: "3px",
+    cursor: "pointer",
+    marginTop: "5px",
+  },
+  footer: {
+    position: "fixed",
+    bottom: 0,
+    width: "100%",
+    backgroundColor: "#333",
+    color: "#fff",
+    textAlign: "center",
+    padding: "10px 0",
+  },
+};
 
 const TeacherDoubts = () => {
   const [doubts, setDoubts] = useState([]);
-  const [replies, setReplies] = useState({}); // Store replies temporarily
-  const teacherEmail = localStorage.getItem("userEmail"); // Get the teacher's email from localStorage
+  const [replies, setReplies] = useState({});
+  const teacherEmail = localStorage.getItem("userEmail");
 
   useEffect(() => {
     const fetchDoubts = async () => {
@@ -12,9 +114,10 @@ const TeacherDoubts = () => {
         const data = await response.json();
 
         if (response.ok) {
-          // Filter doubts to show only those assigned to this teacher
           const filteredDoubts = data.filter(
-            (doubt) => doubt.teacherEmail === teacherEmail
+            (doubt) =>
+              doubt.teacherEmail === teacherEmail &&
+              !JSON.parse(localStorage.getItem(`resolved_${doubt._id}`))
           );
           setDoubts(filteredDoubts);
         }
@@ -24,7 +127,7 @@ const TeacherDoubts = () => {
     };
 
     fetchDoubts();
-  }, [teacherEmail]); // Fetch doubts when the teacher's email changes
+  }, [teacherEmail]);
 
   const handleReplyChange = (doubtId, reply) => {
     setReplies((prevReplies) => ({
@@ -34,167 +137,86 @@ const TeacherDoubts = () => {
   };
 
   const handleReplySubmit = (doubtId, studentEmail) => {
-    // Store the reply and student email in localStorage
     localStorage.setItem(`reply_${doubtId}`, replies[doubtId]);
     localStorage.setItem(`studentEmail_${doubtId}`, studentEmail);
+    localStorage.setItem(`resolved_${doubtId}`, true);
 
-    // Remove the replied doubt from the state so it disappears from the screen
     setDoubts((prevDoubts) => prevDoubts.filter((doubt) => doubt._id !== doubtId));
 
-    // Optional: Clear the reply field after storing it
     setReplies((prevReplies) => {
       const newReplies = { ...prevReplies };
       delete newReplies[doubtId];
       return newReplies;
     });
 
-    alert("Reply saved and doubt removed successfully!");
+    alert("Reply saved and doubt marked as resolved!");
   };
 
   return (
-    <div style={styles.container}>
-      {/* Navigation Bar */}
+    <div>
       <div style={styles.navbar}>
-        <img src="/logo.png" alt="Logo" style={styles.logo} />
+        <img src="/images/logo.jpg" alt="Logo" style={styles.logo} />
+        <h1 style={styles.navTitle}>BMI Tracker</h1>
         <div style={styles.navLinks}>
-          <a href="/" style={styles.navLink}>Home</a>
-          <a href="/profile" style={styles.navLink}>Profile</a>
-          <a href="/logout" style={styles.navLink}>Logout</a>
+          <a href="/teachers" style={styles.navLink}><FaHome style={styles.icon} /> Home</a>
+          <a href="/bmicalculation" style={styles.navLink}><FaCalculator style={styles.icon} /> BMI Calculation</a>
+          <a href="/finalbmi" style={styles.navLink}><FaChartLine style={styles.icon} /> Final BMI</a>
+          <a href="/bmitable" style={styles.navLink}><FaTable style={styles.icon} /> BMI Table</a>
         </div>
       </div>
-
       <h2 style={styles.title}>Student Doubts</h2>
+      <div style={styles.container}>
+      
 
-      {doubts.length === 0 ? (
-        <p style={styles.noDoubts}>No doubts found</p>
-      ) : (
-        <ul style={styles.list}>
-          {doubts.map((doubt) => (
-            <li key={doubt._id} style={styles.doubtItem}>
-              <strong>From:</strong> {doubt.studentEmail}
-              <p style={styles.doubtText}>{doubt.doubt}</p>
-
-              {/* Reply Button */}
-              <button
-                style={styles.replyButton}
-                onClick={() => {
-                  const currentReply = replies[doubt._id] || "";
-                  if (!currentReply) {
+        {doubts.length === 0 ? (
+          <p style={styles.noDoubts}>No doubts found</p>
+        ) : (
+          <ul style={styles.list}>
+            {doubts.map((doubt) => (
+              <li key={doubt._id} style={styles.doubtItem}>
+                <strong>From:</strong> {doubt.studentEmail}
+                <p style={styles.doubtText}>{doubt.doubt}</p>
+                
+                <button
+                  style={styles.replyButton}
+                  onClick={() => {
                     setReplies((prevReplies) => ({
                       ...prevReplies,
                       [doubt._id]: "",
                     }));
-                  }
-                }}
-              >
-                Reply
-              </button>
+                  }}
+                >
+                  Reply
+                </button>
 
-              {/* Reply Textarea and Submit Button */}
-              {replies[doubt._id] !== undefined && (
-                <div>
-                  <textarea
-                    style={styles.textarea}
-                    value={replies[doubt._id]}
-                    onChange={(e) => handleReplyChange(doubt._id, e.target.value)}
-                    placeholder="Type your reply here..."
-                  ></textarea>
-                  <button
-                    style={styles.submitButton}
-                    onClick={() => handleReplySubmit(doubt._id, doubt.studentEmail)}
-                  >
-                    Submit Reply
-                  </button>
-                </div>
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
+                {replies[doubt._id] !== undefined && (
+                  <div>
+                    <textarea
+                      style={styles.textarea}
+                      value={replies[doubt._id]}
+                      onChange={(e) => handleReplyChange(doubt._id, e.target.value)}
+                      placeholder="Type your reply here..."
+                    ></textarea>
+                    <button
+                      style={styles.submitButton}
+                      onClick={() => handleReplySubmit(doubt._id, doubt.studentEmail)}
+                    >
+                      Submit Reply
+                    </button>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      <footer style={styles.footer}>
+        <p>&copy; {new Date().getFullYear()} BMI Tracker. All rights reserved.</p>
+      </footer>
     </div>
   );
 };
 
-const styles = {
-  container: {
-    maxWidth: "600px",
-    margin: "50px auto",
-    padding: "20px",
-    backgroundColor: "#222",
-    color: "#fff",
-    borderRadius: "10px",
-    boxShadow: "0px 0px 10px rgba(255,255,255,0.2)",
-    textAlign: "center",
-  },
-  navbar: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "#333",
-    padding: "10px 20px",
-    marginBottom: "30px",
-  },
-  logo: {
-    height: "40px",
-  },
-  navLinks: {
-    display: "flex",
-  },
-  navLink: {
-    color: "white",
-    marginLeft: "20px",
-    textDecoration: "none",
-    fontSize: "18px",
-  },
-  title: {
-    marginBottom: "10px",
-  },
-  noDoubts: {
-    fontSize: "18px",
-    color: "#aaa",
-  },
-  list: {
-    listStyleType: "none",
-    padding: 0,
-  },
-  doubtItem: {
-    backgroundColor: "#333",
-    padding: "15px",
-    borderRadius: "5px",
-    marginBottom: "10px",
-  },
-  doubtText: {
-    marginTop: "5px",
-    fontSize: "16px",
-  },
-  replyButton: {
-    backgroundColor: "#4CAF50",
-    color: "white",
-    border: "none",
-    padding: "10px 20px",
-    cursor: "pointer",
-    marginTop: "10px",
-  },
-  textarea: {
-    width: "100%",
-    height: "100px",
-    padding: "10px",
-    marginTop: "10px",
-    borderRadius: "5px",
-    border: "1px solid #ccc",
-    resize: "none",
-    backgroundColor: "#444",
-    color: "#fff",
-  },
-  submitButton: {
-    backgroundColor: "#007BFF",
-    color: "white",
-    border: "none",
-    padding: "10px 20px",
-    cursor: "pointer",
-    marginTop: "10px",
-    borderRadius: "5px",
-  },
-};
-
 export default TeacherDoubts;
+ 

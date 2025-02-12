@@ -9,6 +9,7 @@ const FinalBMI=require('./routes/finalbmiRoutes');
 const bmitableRoutes=require('./routes/bmitableRoutes')
 const doubtRoutes=require('./routes/doubtRoutes');
 const studentBmiRoutes=require('./routes/studentBmiRoutes');
+const report=require('./routes/report')
 // Middleware
 const cors = require('cors');
 const app = express();
@@ -34,7 +35,11 @@ db.once('open', () => {
 
 // Routes
 app.use('/register', userRoutes);
+const bmireportRoutes = require("./routes/bmireport");
+app.use("/", bmireportRoutes);
+
 app.use('/', loginRoutes);
+app.use('/', report);
 app.use('/', studentRoutes);
 app.use('/api/bmi',FinalBMI)
 app.use('/api',studentBmiRoutes)

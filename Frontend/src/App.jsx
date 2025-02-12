@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./Components/Login";
 import Register from "./Components/Register";
 import HomePage from "./Components/Homepage";
@@ -13,7 +13,9 @@ import StudentReplies from "./Components/StudentReplies";
 import Final from "./Components/Final";
 import BmiTable from "./Components/BmiTable";
 import StudentBmiChart from "./Components/StudentBmiChart";
-
+import AboutPage from "./Components/AboutPage";
+import TeacherReport from "./Components/TeacherReport";
+import BMIReport from "./Components/BMIReport";
 const App = () => {
   // Inline CSS for styling
   
@@ -39,6 +41,8 @@ const App = () => {
           <Route path="/finalbmi" element={<Final />} />
           <Route path="/bmitable" element={<BmiTable />} />
           <Route path="/chart" element={<StudentBmiChart />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/report" element={<BMIReport />} />
           
         </Routes>
       </div>

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FaWpforms, FaRegComments,FaTable, FaCalculator , FaSignOutAlt } from 'react-icons/fa';
+import { FaWpforms, FaRegComments,FaTable, FaCalculator , FaSignOutAlt,FaFileAlt } from 'react-icons/fa';
 
 const handleLogout = () => {
   sessionStorage.removeItem('user');  // Remove session data
@@ -29,12 +29,13 @@ const TeachersHomePage = () => {
           <Link to="/trdoubtlist" style={styles.link}><FaRegComments style={styles.icon}/>Suggestions</Link>
           <Link to="/finalbmi" style={styles.link}><FaWpforms style={styles.icon}/>Final bmi Calculation</Link>
           <Link to="/bmitable" style={styles.link}><FaTable style={styles.icon}/>BMI overview</Link>
+          <Link to="/report" style={styles.link}><FaFileAlt  style={styles.icon}/>Report</Link>
           <button onClick={handleLogout} style={styles.logoutButton}><FaSignOutAlt style={styles.icon}/>Logout</button>
         </div>
       </div>
 
       <div style={styles.container}>
-        <div style={styles.box}>
+      <div style={styles.box}>
           <h2 style={styles.heading}>🌟 Importance of BMI</h2>
           <p style={styles.text}>
             Tracking BMI helps in understanding students' health status. This website provides a simple
@@ -55,7 +56,35 @@ const TeachersHomePage = () => {
             message, then click the submit button.
           </p>
         </div>
+        <div style={styles.box}>
+          <h2 style={styles.heading}>📊 Final BMI Calculation</h2>
+          <p style={styles.text}>
+            The Final BMI Calculation allows teachers to assess the students' BMI at the end of the training period. 
+            This helps in tracking overall improvements and evaluating the effectiveness of the training. 
+            The data can be used to provide students with personalized health and fitness recommendations.
+          </p>
+        </div>
+        <div style={styles.box}>
+          <h2 style={styles.heading}>📋 BMI Table</h2>
+          <p style={styles.text}>
+            The BMI Table presents a detailed comparison between the students' initial and final BMI. 
+            This feature enables easy visualization of progress over time, identifying trends in BMI changes. 
+            Teachers can use this table to analyze students' health progress and provide further guidance.
+          </p>
+        </div>
+        <div style={styles.box}>
+          <h2 style={styles.heading}>📄 Training Progress Report</h2>
+          <p style={styles.text}>
+            The Training Progress Report compiles a summary of the students' BMI data throughout the training. 
+            This report can be printed for documentation or deleted when necessary. 
+            It serves as an essential tool for tracking health improvements and making future training decisions.
+          </p>
+        </div>
       </div>
+      <footer style={styles.footer}>
+        <p>&copy; 2025 BMI Tracker. All rights reserved.</p>
+       
+      </footer>
     </div>
   );
 };
@@ -72,6 +101,8 @@ const styles = {
     alignItems: "center",
     position: "relative",
   },
+  
+  
   overlay: {
     position: "absolute",
     top: 0,
@@ -81,6 +112,7 @@ const styles = {
     background: "rgba(0, 0, 0, 0.6)", // Dark overlay for readability
     zIndex: 1,
   },
+  footer: { background: "rgba(0, 0, 0, 0.8)", color: "white", textAlign: "center", padding: "1rem", width: "100%", marginTop: "2rem" },
   navbar: {
     display: "flex",
     justifyContent: "space-between",
@@ -101,13 +133,14 @@ const styles = {
     marginRight: "20px",
   },
   navbarHeading: {
-    color: "white",
-    fontSize: "1.8rem",
+  
+    fontSize: "1.5rem",
+    marginBottom: "1rem",
     fontWeight: "bold",
-    textShadow: "0 0 10px rgba(0, 255, 255, 0.7)",
-    flex: 1,  // This ensures it takes available space
-    textAlign: "center", // Centers the heading in the navbar
-  },
+    background: "linear-gradient(to right, red, orange, yellow, green,violet)", // Rainbow gradient
+    backgroundClip: "text", // Clip the background to the text
+    color: "transparent", // Optional: text shadow for extra effect
+    },
   navLinksContainer: {
     display: "flex",
     justifyContent: "space-between",
