@@ -41,7 +41,7 @@ app.use("/", bmireportRoutes);
 app.use('/', loginRoutes);
 app.use('/', report);
 app.use('/', studentRoutes);
-app.use('/api/bmi',FinalBMI)
+app.use('/',FinalBMI)
 app.use('/api',studentBmiRoutes)
 app.use('/api',bmitableRoutes)
 app.get("/api/doubts", async (req, res) => {

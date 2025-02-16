@@ -1,44 +1,45 @@
 const express = require('express');
 const router = express.Router();
-const FinalBmi = require('../schemas/finalbmi');  // Import the FinalBmi model
+const Bmi = require('../schemas/bmiSchema');
+const FinalBmi = require('../schemas/finalbmi');
 
-router.post('/', async (req, res) => {
+// Store BMI Data
+router.get('/api/bmi/get-bmi/:email', async (req, res) => {
   try {
-    const { name, email, weight, height, finalBmi, userId } = req.body;
+    const { email } = req.params;
+    const bmiRecord = await Bmi.findOne({ email });
 
-    if (!email) {
-      return res.status(400).json({ message: 'Email is required' });
+    if (!bmiRecord) {
+      return res.status(404).json({ message: 'BMI not found', bmi: null });
     }
 
-    // Check if email already exists in FinalBmi collection
-    const existingBmi = await FinalBmi.findOne({ email });
+    res.json({ bmi: bmiRecord.bmi });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
-    if (existingBmi) {
-      // If record exists, update it instead of rejecting
-      await FinalBmi.updateOne(
-        { email },
-        { $set: { name, weight, height, finalBmi, userId } }  // Use $set to update only specified fields
-      );
+// **Route 2: Store BMI Data**
+router.post('/api/bmi/store-bmi', async (req, res) => {
+  try {
+    const { name, email, weight, height, finalBmi, bmi, userId } = req.body;
 
-      return res.status(200).json({ message: 'BMI data updated successfully!' });
-    }
-
-    // Create a new BMI record if no existing entry found
     const newFinalBmi = new FinalBmi({
       name,
       email,
       weight,
       height,
       finalBmi,
+      bmi,
       userId,
     });
 
     await newFinalBmi.save();
-    res.status(201).json({ message: 'BMI data saved successfully!' });
-
+    res.json({ message: 'BMI data stored successfully' });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Error storing BMI data' });
   }
 });
 

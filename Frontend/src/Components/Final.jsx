@@ -1,271 +1,202 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { FaHome, FaQuestionCircle, FaTable, FaCalculator } from 'react-icons/fa';
+import { FaHome, FaCalculator, FaTable, FaQuestionCircle, FaFileAlt } from 'react-icons/fa';
 
-function Final() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [weight, setWeight] = useState('');
-  const [height, setHeight] = useState('');
-  const [finalBmi, setFinalBmi] = useState('');
-  const [error, setError] = useState('');
+const Final = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    weight: '',
+    height: '',
+  });
 
-  // Calculate Final BMI
-  const calculateBMI = (weight, height) => {
-    const heightInMeters = height / 100; // converting height to meters
-    const bmi = weight / (heightInMeters * heightInMeters);
-    return bmi.toFixed(2);
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const calculateFinalBmi = () => {
+    const heightInMeters = formData.height / 100;
+    return (formData.weight / (heightInMeters * heightInMeters)).toFixed(2);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Input validation
-    if (!name || !email || !weight || !height) {
-      setError('All fields are required!');
-      return;
-    }
-
-    if (isNaN(weight) || weight <= 0 || isNaN(height) || height <= 0) {
-      setError('Please enter valid height and weight values.');
-      return;
-    }
-
-    const calculatedBmi = calculateBMI(weight, height);
-    setFinalBmi(calculatedBmi);
-
+    const finalBmi = calculateFinalBmi();
     const userId = localStorage.getItem('userId');
 
-    // Validation: Ensure userId exists in localStorage
-    if (!userId) {
-      setError('User ID is missing!');
-      return;
-    }
-
-    const data = {
-      name,
-      email,
-      weight,
-      height,
-      finalBmi: calculatedBmi,  // Ensure this is defined
-      userId,
-    };
-
     try {
-      await axios.post('http://localhost:5000/api/bmi', data);
-      alert('BMI Data Saved Successfully!');
+      const bmiResponse = await axios.get(`http://localhost:5000/api/bmi/get-bmi/${formData.email}`);
+      const bmiValue = bmiResponse.data.bmi || "N/A";
+
+      const storeResponse = await axios.post('http://localhost:5000/api/bmi/store-bmi', {
+        ...formData,
+        finalBmi,
+        bmi: bmiValue,
+        userId,
+      });
+
+      alert(storeResponse.data.message);
     } catch (error) {
       console.error(error);
-      setError(error.response?.data?.message || 'Error saving BMI data!');
+      alert('Error storing BMI data');
     }
   };
 
   return (
-    <div style={styles.pageContainer}>
-      {/* Navigation Bar */}
-      <header style={styles.navbar}>
+    <>
+      {/* Navbar (Outside the Container) */}
+      <div style={styles.navbar}>
         <div style={styles.titleContainer}>
-          <img src="/images/logo.jpg" alt="BMI Tracker Logo" style={styles.logo} />
-          <div style={styles.title}>BMI Tracker</div>
+          <img src="/images/logo.jpg" alt="Logo" style={styles.logo} />
+          <h1 style={styles.title}>BMI Tracker</h1>
         </div>
         <div style={styles.buttonContainer}>
           <a href="/teachers" style={styles.navLink}>
             <FaHome style={styles.icon} /> Home
           </a>
           <a href="/bmicalculation" style={styles.navLink}>
-            <FaCalculator style={styles.icon} /> BMI Calculation
+            <FaCalculator style={styles.icon} /> BMI Calc
+          </a>
+          <a href="/finalbmi" style={styles.navLink}>
+            <FaTable style={styles.icon} /> Final BMI
           </a>
           <a href="/trdoubtlist" style={styles.navLink}>
             <FaQuestionCircle style={styles.icon} /> Doubts
           </a>
-          <a href="/bmitable" style={styles.navLink}>
-            <FaTable style={styles.icon} /> BMI Table
+          <a href="/report" style={styles.navLink}>
+            <FaFileAlt style={styles.icon} /> Report
           </a>
         </div>
-      </header>
-
-      {/* Main Content */}
-      <div style={styles.container}>
-        <h1 style={styles.header}>BMI Calculator</h1>
-        <form onSubmit={handleSubmit} style={styles.form}>
-          <input
-            type="text"
-            placeholder="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value.trim())}
-            style={styles.input}
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value.trim())}  // Remove spaces
-            style={styles.input}
-          />
-          <input
-            type="number"
-            placeholder="Weight (kg)"
-            value={weight}
-            onChange={(e) => setWeight(e.target.value)}
-            style={styles.input}
-          />
-          <input
-            type="number"
-            placeholder="Height (cm)"
-            value={height}
-            onChange={(e) => setHeight(e.target.value)}
-            style={styles.input}
-          />
-          <button type="submit" style={styles.button}>Submit</button>
-        </form>
-
-        {error && <p style={styles.error}>{error}</p>}
-
-        {finalBmi && <p style={styles.result}>Your Final BMI: {finalBmi}</p>}
       </div>
 
-      {/* Footer */}
+      {/* Main Container */}
+      <div style={styles.bmiContainer}>
+        <h2 style={styles.bmiTitle}>Calculate Your BMI</h2>
+        <form style={styles.bmiForm} onSubmit={handleSubmit}>
+          <input type="text" name="name" placeholder="Name" onChange={handleChange} required style={styles.input} />
+          <input type="email" name="email" placeholder="Email" onChange={handleChange} required style={styles.input} />
+          <input type="number" name="weight" placeholder="Weight (kg)" onChange={handleChange} required style={styles.input} />
+          <input type="number" name="height" placeholder="Height (cm)" onChange={handleChange} required style={styles.input} />
+          <button type="submit" style={styles.bmiButton}>Submit</button>
+        </form>
+      </div>
+
+      {/* Footer (Outside the Container) */}
       <footer style={styles.footer}>
-        <p>&copy; 2025 BMI Health Tracker. All rights reserved.</p>
+        &copy; {new Date().getFullYear()} BMI Tracker. All rights reserved.
       </footer>
-    </div>
+    </>
   );
-}
+};
 
 const styles = {
-  pageContainer: {
-    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-    background: '#f9fcff',
-    color: '#333',
-    minHeight: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-  },
+  /* Navbar Styles */
   navbar: {
     display: 'flex',
     justifyContent: 'space-between',
-    padding: '20px',
-    backgroundColor: '#f0f8ff',
-    color: '#444',
+    alignItems: 'center',
+    backgroundColor: '#007bff',
+    padding: '15px 20px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
     position: 'fixed',
     top: '0',
+    left: '0',
     width: '100%',
     zIndex: '1000',
-    borderBottom: '2px solid #a8dadc',
   },
   titleContainer: {
     display: 'flex',
     alignItems: 'center',
   },
   logo: {
-    width: '80px',
+    width: '50px',
     height: '50px',
+    borderRadius: '50%',
     marginRight: '10px',
   },
   title: {
-    fontSize: '26px',
+    fontSize: '24px',
     fontWeight: 'bold',
-    background: "linear-gradient(to right, red, orange, yellow, green, violet)",
-    WebkitBackgroundClip: "text", // Clip the gradient to text
-  WebkitTextFillColor: "transparent",
+    textTransform: 'uppercase',
+    background: 'linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
   },
+
   buttonContainer: {
     display: 'flex',
-    alignItems: 'center',
+    gap: '15px',
   },
   navLink: {
-    color: '#005f73',
-    marginLeft: '20px',
-    textDecoration: 'none',
-    fontSize: '1.2rem',
-    fontWeight: 'bold',
     display: 'flex',
     alignItems: 'center',
+    gap: '5px',
+    color: 'white',
+    fontSize: '16px',
+    textDecoration: 'none',
+    transition: 'color 0.3s ease-in-out',
   },
   icon: {
-    marginRight: '8px',
-    fontSize: '1.4rem',
+    marginRight: '5px',
   },
-  container: {
+
+  /* BMI Form Styles */
+  bmiContainer: {
+    maxWidth: '400px',
+    margin: '100px auto 50px auto', // Adjusted margin to avoid overlapping with navbar
     padding: '20px',
-    backgroundColor: '#f0fdfd',
-    borderRadius: '15px',
-    width: '1000px',
-    margin: '120px auto 30px',
-    boxShadow: '0 4px 8px rgba(173, 216, 230, 0.5)',
-    background: 'linear-gradient(45deg, #caf0f8, #ade8f4)',
-    position: 'relative',
-    animation: 'glow 1.5s infinite alternate',
-  },
-  header: {
+    background: '#f9f9f9',
+    borderRadius: '10px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
     textAlign: 'center',
-    color: '#0077b6',
-    marginBottom: '20px',
-    fontSize: '2rem',
+  },
+  bmiTitle: {
+    fontSize: '24px',
     fontWeight: 'bold',
+    marginBottom: '20px',
+    color: '#333',
+  },
+  bmiForm: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '15px',
   },
   input: {
-    width: '80%',
-    padding: '12px',
-    margin: '12px 0',
-    borderRadius: '8px',
-    border: '2px solid transparent',
+    padding: '10px',
     fontSize: '16px',
-    transition: '0.3s ease-in-out',
+    border: '1px solid #ccc',
+    borderRadius: '5px',
     outline: 'none',
-    backgroundColor: '#eef6f7',
-    color: '#005f73',
-    boxShadow: '0 0 5px rgba(173, 216, 230, 0.4)',
+    transition: '0.3s',
+    width: 'calc(100% - 20px)',
+    margin: '0 auto',
   },
-  button: {
-    backgroundColor: '#90e0ef',
-    color: '#023e8a',
-    border: 'none',
-    padding: '12px 20px',
-    cursor: 'pointer',
-    marginTop: '15px',
-    borderRadius: '8px',
-    fontSize: '16px',
-    transition: '0.3s ease-in-out',
-    boxShadow: '0 0 10px rgba(173, 216, 230, 0.7)',
-  },
-  error: {
-    color: '#ef476f',
+  bmiButton: {
+    padding: '10px',
     fontSize: '18px',
-    marginTop: '10px',
-  },
-  result: {
-    marginTop: '20px',
-    fontSize: '20px',
-    color: '#06d6a0',
     fontWeight: 'bold',
+    color: '#fff',
+    background: '#007bff',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    transition: '0.3s',
+    width: 'calc(100% - 20px)',
+    margin: '0 auto',
   },
+
+  /* Footer Styles */
   footer: {
-    marginTop: 'auto',
-    padding: '15px 0',
     textAlign: 'center',
-    backgroundColor: '#005f73',
-    color: '#ffffff',
-    fontSize: '1rem',
-    fontWeight: 'bold',
-    boxShadow: '0 -2px 10px rgba(0, 95, 115, 0.3)',
+    padding: '15px',
+    backgroundColor: '#007bff',
+    color: 'white',
+    fontSize: '14px',
+    position: 'fixed',
+    bottom: '0',
+    left: '0',
+    width: '100%',
   },
-
 };
-
-// Adjusted animation
-const keyframes = `
-  @keyframes glow {
-    0% {
-      box-shadow: 0 0 10px rgba(173, 216, 230, 0.3), 0 0 20px rgba(173, 216, 230, 0.2);
-    }
-    100% {
-      box-shadow: 0 0 15px rgba(173, 216, 230, 0.5), 0 0 30px rgba(173, 216, 230, 0.4);
-    }
-  }
-`;
-
-document.head.insertAdjacentHTML('beforeend', `<style>${keyframes}</style>`);
-
 
 export default Final;

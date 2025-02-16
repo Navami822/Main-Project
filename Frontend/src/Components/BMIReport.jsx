@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FaHome, FaCalculator, FaSignOutAlt,FaRegComments,FaWpforms,FaTable } from "react-icons/fa";
+import { FaHome, FaCalculator, FaRegComments, FaWpforms, FaTable, FaPrint, FaTrash } from "react-icons/fa";
 import axios from "axios";
 
 const BMIReport = () => {
   const [report, setReport] = useState([]);
-  const [effectiveness, setEffectiveness] = useState("");
+  const [analysis, setAnalysis] = useState(null);
 
   useEffect(() => {
     fetchReport();
@@ -15,21 +15,59 @@ const BMIReport = () => {
     try {
       const response = await axios.get("http://localhost:5000/bmi-report");
       setReport(response.data.data);
-      setEffectiveness(response.data.effectiveness);
+      analyzeData(response.data.data);
     } catch (error) {
       console.error("Error fetching report:", error);
     }
   };
 
-  const handlePrint = () => {
+  const analyzeData = (data) => {
+    if (!data || data.length === 0) return;
+
+    let sameBMI = 0, increasedBMI = 0, decreasedBMI = 0;
+    let underweight = 0, normal = 0, overweight = 0, obese = 0;
+
+    data.forEach((student) => {
+      if (student.bmi.toFixed(2) === student.finalBmi.toFixed(2)) {
+        sameBMI++;
+      } else if (student.finalBmi > student.bmi) {
+        increasedBMI++;
+      } else {
+        decreasedBMI++;
+      }
+
+      if (student.finalBmi < 18.5) {
+        underweight++;
+      } else if (student.finalBmi >= 18.5 && student.finalBmi <= 24.9) {
+        normal++;
+      } else if (student.finalBmi >= 25 && student.finalBmi <= 29.9) {
+        overweight++;
+      } else {
+        obese++;
+      }
+    });
+
+    setAnalysis({
+      sameBMI: ((sameBMI / data.length) * 100).toFixed(2),
+      increasedBMI: ((increasedBMI / data.length) * 100).toFixed(2),
+      decreasedBMI: ((decreasedBMI / data.length) * 100).toFixed(2),
+      underweight: ((underweight / data.length) * 100).toFixed(2),
+      normal: ((normal / data.length) * 100).toFixed(2),
+      overweight: ((overweight / data.length) * 100).toFixed(2),
+      obese: ((obese / data.length) * 100).toFixed(2),
+    });
+  };
+
+  const printReport = () => {
     window.print();
   };
 
-  const handleDelete = async () => {
+  const deleteReport = async () => {
     try {
       await axios.delete("http://localhost:5000/delete-report");
       setReport([]);
-      setEffectiveness("Report deleted successfully.");
+      setAnalysis(null);
+      alert("BMI report deleted successfully.");
     } catch (error) {
       console.error("Error deleting report:", error);
     }
@@ -37,105 +75,50 @@ const BMIReport = () => {
 
   return (
     <>
-      {/* Navbar */}
-      <nav style={styles.navbar}>
-        <img src="/images/logo.jpg" alt="Logo" style={styles.logo} />
-        <h1 style={styles.navbarTitle}>BMI Tracker</h1>
-        <div style={styles.navLinks}>
-          <Link to="/" style={styles.link}><FaHome style={styles.icon}/> Home</Link>
-          <Link to="/bmicalculation" style={styles.link}><FaCalculator style={styles.icon}/> BMI Calculator</Link>
-           <Link to="/trdoubtlist" style={styles.link}><FaRegComments style={styles.icon}/>Suggestions</Link>
-           <Link to="/finalbmi" style={styles.link}><FaWpforms style={styles.icon}/>Final bmi</Link>
-          <Link to="/bmitable" style={styles.link}><FaTable style={styles.icon}/>BMI overview</Link>
-         
+      <nav style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "15px 30px", background: "#282c34", color: "white" }}>
+        <h1>BMI Tracker</h1>
+        <div>
+          <Link to="/" style={{ color: "white", marginRight: "15px" }}><FaHome /> Home</Link>
+          <Link to="/bmicalculation" style={{ color: "white", marginRight: "15px" }}><FaCalculator /> BMI Calculator</Link>
+          <Link to="/trdoubtlist" style={{ color: "white", marginRight: "15px" }}><FaRegComments /> Suggestions</Link>
+          <Link to="/finalbmi" style={{ color: "white", marginRight: "15px" }}><FaWpforms /> Final BMI</Link>
+          <Link to="/bmitable" style={{ color: "white" }}><FaTable /> BMI Overview</Link>
         </div>
       </nav>
-      
-      {/* Report Section */}
-      <div style={styles.reportContainer}>
-        <div style={styles.reportCard}>
-          <h2 style={styles.reportTitle}>BMI Report</h2>
-          <p style={styles.effectivenessText}>{effectiveness}</p>
 
-          {report.length > 0 ? (
-            <table style={styles.table}>
-              <thead>
-                <tr>
-                  <th style={styles.tableHeader}>Name</th>
-                  <th style={styles.tableHeader}>Initial BMI</th>
-                  <th style={styles.tableHeader}>Final BMI</th>
-                  <th style={styles.tableHeader}>Status</th>
-                </tr>
-              </thead>
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", backgroundColor: "#f4f4f4" }}>
+        <div style={{ background: "white", padding: "20px", borderRadius: "8px", boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", width: "50%", textAlign: "center", color: "black" }}>
+          <h2>BMI Report Analysis</h2>
+          {analysis ? (
+            <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: "20px" }}>
               <tbody>
-                {report.map((student, index) => (
-                  <tr key={index}>
-                    <td style={styles.tableCell}>{student.name}</td>
-                    <td style={styles.tableCell}>{student.bmi.toFixed(2)}</td>
-                    <td style={styles.tableCell}>{student.finalBmi.toFixed(2)}</td>
-                    <td style={{ ...styles.tableCell, color: student.finalBmi >= 18.5 && student.finalBmi <= 24.9 ? "green" : "red" }}>
-                      {student.finalBmi >= 18.5 && student.finalBmi <= 24.9 ? "Normal" : "Needs Improvement"}
-                    </td>
-                  </tr>
-                ))}
+                <tr><td style={{ padding: "10px", border: "1px solid black" }}>Same BMI</td><td style={{ padding: "10px", border: "1px solid black" }}>{analysis.sameBMI}%</td></tr>
+                <tr><td style={{ padding: "10px", border: "1px solid black" }}>Increased BMI</td><td style={{ padding: "10px", border: "1px solid black" }}>{analysis.increasedBMI}%</td></tr>
+                <tr><td style={{ padding: "10px", border: "1px solid black" }}>Decreased BMI</td><td style={{ padding: "10px", border: "1px solid black" }}>{analysis.decreasedBMI}%</td></tr>
+                <tr><td style={{ padding: "10px", border: "1px solid black" }}>Underweight</td><td style={{ padding: "10px", border: "1px solid black" }}>{analysis.underweight}%</td></tr>
+                <tr><td style={{ padding: "10px", border: "1px solid black" }}>Normal</td><td style={{ padding: "10px", border: "1px solid black" }}>{analysis.normal}%</td></tr>
+                <tr><td style={{ padding: "10px", border: "1px solid black" }}>Overweight</td><td style={{ padding: "10px", border: "1px solid black" }}>{analysis.overweight}%</td></tr>
+                <tr><td style={{ padding: "10px", border: "1px solid black" }}>Obese</td><td style={{ padding: "10px", border: "1px solid black" }}>{analysis.obese}%</td></tr>
               </tbody>
             </table>
           ) : (
-            <p style={{ textAlign: "center", fontSize: "18px", fontWeight: "bold" }}>No report available.</p>
+            <p>Loading analysis...</p>
           )}
 
-          <div style={styles.buttonContainer}>
-            <button onClick={handlePrint} style={styles.printButton}>Print Report</button>
-            <button onClick={handleDelete} style={styles.deleteButton}>Delete Report</button>
-          </div>
+          <button onClick={printReport} style={{ marginRight: "10px", padding: "10px", background: "#4CAF50", color: "white", border: "none", cursor: "pointer" }}>
+            <FaPrint /> Print Report
+          </button>
+          <button onClick={deleteReport} style={{ padding: "10px", background: "#d9534f", color: "white", border: "none", cursor: "pointer" }}>
+            <FaTrash /> Delete Report
+          </button>
         </div>
-        <footer style={styles.footer}>
-        © {new Date().getFullYear()} BMI Tracker | All Rights Reserved
-      </footer>
       </div>
-    </>
+    
+    <footer style={{ textAlign: "center", padding: "10px", background: "#282c34", color: "white" }}>
+    <p>&copy; 2025 BMI Tracker. All rights reserved.</p>
+  </footer>
+</>
   );
-};
-
-const styles = {
-  navbar: {
-    display: "flex", justifyContent: "space-between", alignItems: "center", padding: "15px 30px", background: "#282c34", color: "white",
-  },
-  logo: { width: "80px", height: "60px" },
-  navbarTitle: {
-  fontSize: "22px",
-  fontWeight: "bold",
-  background: "linear-gradient(to right, red, orange, yellow, green, violet)", // Rainbow gradient
-  WebkitBackgroundClip: "text", // Clip the gradient to text
-  WebkitTextFillColor: "transparent", // Make text transparent to show gradient
-},
-
-  navLinks: { display: "flex", gap: "15px" },
-  link: { textDecoration: "none", color: "white", fontSize: "18px", padding: "8px 12px", borderRadius: "5px", background: "#4a90e2" },
-  logoutButton: { background: "#e74c3c", color: "white", border: "none", padding: "8px 12px", borderRadius: "5px", cursor: "pointer", fontSize: "18px" },
-  icon: { marginRight: "5px" },
-  footer: {
-    position: "fixed",
-    bottom: "0",
-    width: "100%",
-    background: "#282c34",
-    color: "white",
-    textAlign: "center",
-    padding: "10px 0",
-    fontSize: "16px",
-  },
-  reportContainer: { display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", background: "#f4f4f4" },
-  reportCard: { background: "white", padding: "30px", borderRadius: "10px", boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", width: "80%", maxWidth: "800px" },
-  reportTitle: { fontSize: "26px", fontWeight: "bold", textAlign: "center" },
-  effectivenessText: { fontSize: "18px", textAlign: "center", color: "#555" },
-  
-  table: { width: "100%", borderCollapse: "collapse", marginTop: "20px" },
-  tableHeader: { background: "#4a90e2", color: "white", padding: "10px", textAlign: "center", fontSize: "18px" },
-  tableCell: { padding: "10px", border: "1px solid #ddd", textAlign: "center", fontSize: "16px" ,color: "black"},
-  
-  buttonContainer: { display: "flex", justifyContent: "center", gap: "15px", marginTop: "20px" },
-  printButton: { background: "#2ecc71", color: "white", border: "none", padding: "10px 20px", borderRadius: "5px", fontSize: "16px", cursor: "pointer" },
-  deleteButton: { background: "#e74c3c", color: "white", border: "none", padding: "10px 20px", borderRadius: "5px", fontSize: "16px", cursor: "pointer" },
 };
 
 export default BMIReport;
