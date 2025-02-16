@@ -57,8 +57,8 @@ const Final = () => {
           <a href="/bmicalculation" style={styles.navLink}>
             <FaCalculator style={styles.icon} /> BMI Calc
           </a>
-          <a href="/finalbmi" style={styles.navLink}>
-            <FaTable style={styles.icon} /> Final BMI
+          <a href="/bmitable" style={styles.navLink}>
+            <FaTable style={styles.icon} />Overview
           </a>
           <a href="/trdoubtlist" style={styles.navLink}>
             <FaQuestionCircle style={styles.icon} /> Doubts

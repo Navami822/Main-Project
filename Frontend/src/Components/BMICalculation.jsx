@@ -106,12 +106,40 @@ const BMICalculation = () => {
   };
 
   const handleDelete = () => {
-    // Logic to delete the student
-  };
+    const { email, name } = formInput;
+    const studentIndex = students.findIndex(
+      (student) => student.email === email && student.name === name
+    );
+    if (studentIndex !== -1) {
+      const updatedStudents = students.filter((_, index) => index !== studentIndex);
+      setStudents(updatedStudents);
+      setMessage('Student successfully deleted.');
+    } else {
+      setMessage('Student not found.');
+    }
+    setFormInput({ email: '', name: '' });
+};
 
-  const handleUpdate = () => {
-    // Logic to update student data
-  };
+
+const handleUpdate = () => {
+  const { email, name, newHeight, newWeight } = formInput;
+  const studentIndex = students.findIndex(
+    (student) => student.email === email && student.name === name
+  );
+  if (studentIndex !== -1) {
+    const updatedStudents = students.map((student, index) =>
+      index === studentIndex
+        ? { ...student, height: newHeight || student.height, weight: newWeight || student.weight }
+        : student
+    );
+    setStudents(updatedStudents);
+    setMessage('Student details successfully updated.');
+  } else {
+    setMessage('Student not found.');
+  }
+  setFormInput({ email: '', name: '', newHeight: '', newWeight: '' });
+};
+
 
   return (
     <div className="container">
@@ -283,6 +311,7 @@ const BMICalculation = () => {
         &copy; {new Date().getFullYear()} BMI Tracker. All rights reserved.
       </footer>
     </div>
+    
   );
 };
 
@@ -307,6 +336,11 @@ body {
   background-size: cover;
   background-position: center;
   height: 100vh;
+  padding: 0px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   padding: 0px;
   color: white;
 }
@@ -469,6 +503,7 @@ body {
             font-size: 14px;
             color: #ffffff;
             margin-top: auto;
+            
           }
 `;
 

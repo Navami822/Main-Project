@@ -30,8 +30,8 @@ const styles = {
     marginRight: "5px",
   },
   container: {
-    width: "500px", // Adjust as needed
-    height: "300px", // Make it square
+    width: "900px", // Adjust as needed
+    height: "600px", // Make it square
     margin: "50px auto", // Center it
     padding: "20px",
     border: "1px solid #ddd",
@@ -58,11 +58,12 @@ const styles = {
   },
   doubtItem: {
     border: "1px solid #ddd",
-    padding: "10px",
-    marginBottom: "10px",
-    borderRadius: "5px",
-    backgroundColor: "rgba(255, 255, 255, 0.85)",
-    boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+    padding: "20px", // Increased padding
+    marginBottom: "15px", // Increased space between items
+    borderRadius: "8px", // Slightly rounded corners
+    backgroundColor: "rgba(20, 17, 17, 0.85)",
+    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)", // Slightly larger shadow
+    fontSize: "18px", // Increased font size
   },
   doubtText: {
     fontSize: "16px",
@@ -78,7 +79,7 @@ const styles = {
   },
   textarea: {
     width: "100%",
-    height: "60px",
+    height: "160px",
     marginTop: "10px",
     padding: "5px",
   },
